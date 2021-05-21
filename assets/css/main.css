@@ -1775,6 +1775,7 @@ input, select, textarea {
 		width: -ms-max-content;
 		width: max-content;
 		margin-bottom: 2em;
+		text-align: center;
 	}
 
 		header.major > :first-child {
@@ -3462,6 +3463,7 @@ input, select, textarea {
 				-ms-align-items: center;
 				align-items: center;
 				margin: 0 0 2em 0;
+				justify-content: center;
 			}
 
 				#banner > .inner .content > * {
