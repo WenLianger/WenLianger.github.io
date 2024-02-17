@@ -1,0 +1,400 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>色轮调色盘</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+</head>
+<body class="is-preload">
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Header -->
+    <header id="header">
+        <a href="../index.html" class="logo"><strong>Forty</strong> <span>by HTML5 UP</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+    <!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../landing.html">About me</a></li>
+            <li><a href="../views/vita.html">Curriculum vita</a></li>
+            <li><a href="../views/things.html">我的组件库</a></li>
+            <li><a href="../elements.html">More</a></li>
+        </ul>
+        <ul class="actions stacked">
+            <li><a href="#" class="button primary fit">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main -->
+    <div id="main" class="alt">
+
+        <!-- One -->
+        <section id="one">
+            <div class="inner">
+                <header class="major">
+                    <h1>色轮调色盘</h1>
+                </header>
+                <div class="colorPalette">
+                    <div class="colorWheel">
+                        <canvas width=350 height=350 id="colorSelector"></canvas>
+                        <div id="colorPicker"></div>
+                    </div>
+
+                    <div class="colorParam">
+                        <label for="rInput">R</label><input class="rgbInput" id="rInput">
+                        <label for="gInput">G</label><input class="rgbInput" id="gInput">
+                        <label for="bInput">B</label><input class="rgbInput" id="bInput">
+                        <label for="hexInput">#</label><input id="hexInput">
+                    </div>
+                </div>
+                <p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel sed vehicula.</p>
+                <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+            </div>
+        </section>
+
+    </div>
+</div>
+</body>
+
+<style>
+    .colorPalette {
+        background: white;
+        font-size: 0;
+        padding: 12px;
+    }
+
+    .colorWheel {
+        display: inline-block;
+        position: relative;
+    }
+
+    #colorPicker {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1px solid black;
+        position: absolute;
+        top: 0;
+    }
+
+    .colorParam {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 12px;
+    }
+
+    .colorParam label, .colorParam input {
+        color: #2a2f4a;
+        font-family: monospace;
+        font-size: 12px;
+        margin: 0;
+    }
+</style>
+
+<script>
+    function id(id) {
+        return document.getElementById(id);
+    }
+
+    function paintColorPalette() {
+        const canvas = id('colorSelector');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const radius = width / 2;
+
+        // 绘制彩虹色环
+        for(let angle = 0; angle < 360; angle += 1) {
+            const gradient = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+            gradient.addColorStop(0, `hsla(${angle+90}, 100%, 50%, 0)`);
+            gradient.addColorStop(1, `hsla(${angle + 1+90}, 100%, 50%, 100%)`);
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(radius, radius);
+            ctx.arc(radius, radius, radius, (angle - 1) * Math.PI/180, angle * Math.PI/180);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    // 16进制转rgb
+    function hex2rgb(hex) {
+        var r = parseInt(hex.substring(0, 2), 16);
+        var g = parseInt(hex.substring(2, 4), 16);
+        var b = parseInt(hex.substring(4, 6), 16);
+        return r + "," + g + "," + b;
+    }
+
+    function padZero(num) {
+        return num.length < 2 ? '0' + num : num;
+    }
+
+    // rgb转16进制
+    function rgb2hex(r, g, b) {
+        r = parseInt(r);
+        g = parseInt(g);
+        b = parseInt(b);
+        return padZero(r.toString(16)) + padZero(g.toString(16)) + padZero(b.toString(16));
+    }
+
+    function rgb2hsv(r, g, b) {
+        r = parseInt(r);
+        g = parseInt(g);
+        b = parseInt(b);
+
+        var h, s, v = Math.max(r, g, b), diff = v - Math.min(r, g, b);
+
+        function diffc(c) {
+            return (v - c) / 6 / diff + 1 / 2;
+        }
+
+        if (diff == 0) {
+            h = s = 0;
+        } else {
+            s = diff / v;
+            rr = diffc(r);
+            gg = diffc(g);
+            bb = diffc(b);
+            if (r == v) {
+                h = bb - gg;
+            } else if (g == v) {
+                h = (1 / 3) + rr - bb;
+            } else if (b == v) {
+                h = (2 / 3) + gg - rr;
+            }
+            if (h < 0) {
+                h += 1;
+            } else if (h > 1) {
+                h -= 1;
+            }
+        }
+        return {
+            h: Math.round(h * 360),
+            s: Math.round(s * 360),
+            v: Math.round(v * 360)
+        }
+    }
+
+    function hsv2rgb(data) {
+        var h = data[0], s = data[1], v = data[2];
+        s = s / 100;
+        v = v / 100;
+        var r = 0, g = 0, b = 0;
+        var i = parseInt((h / 60) % 6);
+        var f = h / 60 - i;
+        var p = v * (1 - s);
+        var q = v * (1 - f * s);
+        var t = v * (1 - (1 - f) * s);
+        switch (i) {
+            case 0:
+                r = v;
+                g = t;
+                b = p;
+                break;
+            case 1:
+                r = q;
+                g = v;
+                b = p;
+                break;
+            case 2:
+                r = p;
+                g = v;
+                b = t;
+                break;
+            case 3:
+                r = p;
+                g = q;
+                b = v;
+                break;
+            case 4:
+                r = t;
+                g = p;
+                b = v;
+                break;
+            case 5:
+                r = v;
+                g = p;
+                b = q;
+                break;
+            default:
+                break;
+        }
+        r = parseInt(r * 255);
+        g = parseInt(g * 255);
+        b = parseInt(b * 255);
+        return [r > 0 ? r : 0, g > 0 ? g : 0, b > 0 ? b : 0];
+    }
+
+    // 设置圆点位置
+    function setPickerPosition(r, g, b) {
+        var colorPicker = id("colorPicker");
+
+        if (rgb2hsv(r, g, b)['v'] < 25500) {
+            colorPicker.style.left = '0px';
+            colorPicker.style.top = '0px';
+            return;
+        }
+        r = parseInt(r);
+        g = parseInt(g);
+        b = parseInt(b);
+        // rgb转换色相
+        var angle = (rgb2hsv(r, g, b)['h'] - 90) / 180 * Math.PI;
+        // 根据色相角度和半径求坐标
+        var radius = id("colorSelector").width / 2;
+        var offsetX = radius + radius * Math.cos(angle) * (255 - Math.min(r, g, b)) / 255;
+        var offsetY = radius + radius * Math.sin(angle) * (255 - Math.min(r, g, b)) / 255;
+        colorPicker.style.left = offsetX - colorPicker.offsetWidth / 2 + 'px';
+        colorPicker.style.top = offsetY - colorPicker.offsetHeight / 2 + 'px';
+    }
+
+    function movePicker2Position(e) {
+        var radius = id("colorSelector").width / 2;
+        if ((e.offsetX - radius) * (e.offsetX - radius) + (e.offsetY - radius) * (e.offsetY - radius) > radius * radius) {
+            return;
+        }
+        id("colorPicker").style.left = e.offsetX - id("colorPicker").offsetWidth / 2 + 'px';
+        id("colorPicker").style.top = e.offsetY - id("colorPicker").offsetHeight / 2 + 'px';
+    }
+
+    // 更新圆点颜色
+    function updatePickerColor(e) {
+        var offsetX, offsetY;
+        var dia = id("colorSelector").width;
+        if (isDragging && e.target.id == 'colorPicker') { // 当鼠标移动过快，target可能由colorPicker变为colorSelector
+            offsetX = (e.target.offsetLeft / dia) * 100;
+            offsetY = (e.target.offsetTop / dia) * 100;
+        } else {
+            offsetX = ((e.offsetX || e.layerX) / dia) * 100;
+            offsetY = ((e.offsetY || e.layerY) / dia) * 100;
+        }
+        var location = return_location(offsetX, offsetY);
+        var rgb = hsv2rgb(location);
+        var color = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+        id("colorPicker").style.backgroundColor = color;
+        id("rInput").value = rgb[0];
+        id("gInput").value = rgb[1];
+        id("bInput").value = rgb[2];
+        id("hexInput").value = rgb2hex(rgb[0], rgb[1], rgb[2]);
+
+        function return_location(left, top) {
+            var datax = left - 50;
+            var datay = 50 - top;
+            var x = Math.abs(datax);
+            var y = Math.abs(datay);
+            // 斜边
+            var hypotenuse = Math.sqrt(x * x + y * y);
+            // cos值
+            var ttt = hypotenuse * hypotenuse + x * x - y * y;
+            var bbb = 2 * hypotenuse * x;
+            var cos = ttt / bbb;
+            var dataAcos = Number(new Number((Math.acos(cos) * 180) / Math.PI).toFixed(2));
+
+            var angle = 0;
+            var hypotenuseReturn = 2 * hypotenuse;
+            if (datax > 0 && datay > 0) {
+                angle = 90 - dataAcos;
+            } else if (datax > 0 && datay < 0) {
+                angle = 90 + dataAcos;
+            } else if (datax < 0 && datay < 0) {
+                angle = 90 - dataAcos + 180;
+            } else if (datax < 0 && datay > 0) {
+                angle = dataAcos + 270;
+            } else if (datax < 0 && datay == 0) {
+                angle = 270;
+            } else if (datax == 0 && datay < 0) {
+                angle = 180;
+            } else if (datax > 0 && datay == 0) {
+                angle = 90;
+            }
+            return [angle, hypotenuseReturn, 100];
+        }
+    }
+
+    function isHexColor(hex) {
+        return typeof hex == 'string' && hex.length == 6 && !isNaN(Number('0x' + hex));
+    }
+
+    paintColorPalette();
+    id("hexInput").addEventListener('input', function (e) {
+        var oldValue = e.target.value;
+        e.target.value = e.target.value.replace(/[^\w]/g, '');
+        if (oldValue != e.target.value) {
+            return;
+        }
+        if (e.target.value.length > 6) {
+            e.target.value = e.target.value.slice(0, 6);
+        }
+        if (!isHexColor(e.target.value)) {
+            return;
+        }
+        var hexValue = id("hexInput").value;
+        id("rInput").value = parseInt(hexValue.substring(0, 2), 16);
+        id("gInput").value = parseInt(hexValue.substring(2, 4), 16);
+        id("bInput").value = parseInt(hexValue.substring(4, 6), 16);
+        setPickerPosition(id("rInput").value, id("gInput").value, id("bInput").value);
+        id("colorPicker").style.backgroundColor = 'rgb(' + hex2rgb(hexValue) + ')';
+    });
+
+    var rgbInputs = document.querySelectorAll('.rgbInput');
+    for (var i = 0; i < rgbInputs.length; i++) {
+        var input = rgbInputs[i];
+        input.addEventListener('input', function (e) {
+            var oldValue = e.target.value;
+            e.target.value = e.target.value.replace(/[^\d]/g, '');
+            if (oldValue != e.target.value || oldValue == '') {
+                return;
+            }
+            if (parseInt(e.target.value) < 0) {
+                e.target.value = 0;
+            }
+            if (parseInt(e.target.value) > 255) {
+                e.target.value = 255;
+            }
+            id("hexInput").value = rgb2hex(id("rInput").value, id("gInput").value, id("bInput").value);
+            setPickerPosition(id("rInput").value, id("gInput").value, id("bInput").value);
+            id("colorPicker").style.backgroundColor = 'rgb(' + hex2rgb(id("hexInput").value) + ')';
+        });
+    }
+
+    // 调色盘点击、拖动事件
+    var isDragging = false;
+    id("colorSelector").addEventListener('click', function (e) {
+        if (isDragging) {
+            isDragging = false;
+        } else {
+            movePicker2Position(e);
+            updatePickerColor(e);
+        }
+    });
+    id("colorSelector").addEventListener('mousemove', function (e) {
+        if (isDragging) {
+            movePicker2Position(e);
+            updatePickerColor(e);
+        }
+    });
+    id("colorPicker").addEventListener('mousedown', function (e) {
+        isDragging = true;
+        e.preventDefault();
+    });
+    id("colorPicker").addEventListener('mouseup', function (e) {
+        isDragging = false;
+        e.preventDefault();
+    });
+    id("colorPicker").addEventListener('mouseover', function (e) {
+        e.preventDefault();
+        var radius = document.getElementById("colorSelector").width / 2;
+        if ((e.left - radius) * (e.left - radius) + (e.top - radius) * (e.top - radius) > radius * radius) {
+            isDragging = false;
+        }
+    });
+</script>
+</html>
